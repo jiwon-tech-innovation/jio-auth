@@ -75,4 +75,19 @@ class GoogleOAuthController(
             "email" to email
         ))
     }
+
+    @GetMapping("/status")
+    fun getStatus(@io.github.jiwontechinovation.jio.security.CurrentUser user: User): ResponseEntity<Map<String, Any?>> {
+        val connected = googleOAuthService.isConnected(user)
+        return ResponseEntity.ok(mapOf<String, Any?>(
+            "connected" to connected,
+            "email" to if (connected) user.email else null
+        ))
+    }
+
+    @DeleteMapping("/disconnect")
+    fun disconnect(@io.github.jiwontechinovation.jio.security.CurrentUser user: User): ResponseEntity<Void> {
+        googleOAuthService.disconnect(user)
+        return ResponseEntity.ok().build()
+    }
 }

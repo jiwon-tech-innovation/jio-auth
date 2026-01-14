@@ -151,4 +151,15 @@ class GoogleOAuthService(
         @Suppress("UNCHECKED_CAST")
         return response.body as Map<String, Any>? ?: throw RuntimeException("Failed to refresh token")
     }
+
+    fun isConnected(user: User): Boolean {
+        return googleTokenRepository.findByUser(user).isPresent
+    }
+
+    fun disconnect(user: User) {
+        val tokenOpt = googleTokenRepository.findByUser(user)
+        if (tokenOpt.isPresent) {
+            googleTokenRepository.delete(tokenOpt.get())
+        }
+    }
 }
