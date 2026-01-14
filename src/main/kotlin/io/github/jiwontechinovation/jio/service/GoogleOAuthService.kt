@@ -109,7 +109,7 @@ class GoogleOAuthService(
     /**
      * Get access token for a user (refresh if expired)
      */
-    fun getAccessToken(userId: Long): String? {
+    fun getAccessToken(userId: java.util.UUID): String? {
         val tokenOpt = googleTokenRepository.findByUserId(userId)
         if (tokenOpt.isEmpty) return null
 
