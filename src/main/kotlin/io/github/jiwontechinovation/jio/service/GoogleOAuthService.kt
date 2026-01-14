@@ -12,6 +12,8 @@ import org.springframework.web.client.RestTemplate
 import java.net.URLEncoder
 import java.time.LocalDateTime
 
+import java.util.Optional
+
 @Service
 class GoogleOAuthService(
     private val googleConfig: GoogleOAuthConfig,
@@ -158,8 +160,8 @@ class GoogleOAuthService(
         return googleTokenRepository.findByUser(user).isPresent
     }
 
-    fun getGoogleToken(user: User): Optional<GoogleToken> {
-        return googleTokenRepository.findByUser(user)
+    fun getGoogleToken(user: User): GoogleToken? {
+        return googleTokenRepository.findByUser(user).orElse(null)
     }
 
     fun disconnect(user: User) {

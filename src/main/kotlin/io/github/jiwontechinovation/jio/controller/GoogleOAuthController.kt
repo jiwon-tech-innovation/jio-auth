@@ -91,10 +91,10 @@ class GoogleOAuthController(
 
     @GetMapping("/status")
     fun getStatus(@io.github.jiwontechinovation.jio.security.CurrentUser user: User): ResponseEntity<Map<String, Any?>> {
-        val googleTokenOpt = googleOAuthService.getGoogleToken(user)
+        val googleToken = googleOAuthService.getGoogleToken(user)
         return ResponseEntity.ok(mapOf<String, Any?>(
-            "connected" to googleTokenOpt.isPresent,
-            "email" to googleTokenOpt.map { it.googleEmail }.orElse(null)
+            "connected" to (googleToken != null),
+            "email" to googleToken?.googleEmail
         ))
     }
 
