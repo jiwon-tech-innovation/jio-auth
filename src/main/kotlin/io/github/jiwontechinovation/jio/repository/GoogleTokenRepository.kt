@@ -8,4 +8,5 @@ import java.util.Optional
 interface GoogleTokenRepository : JpaRepository<GoogleToken, Long> {
     fun findByUser(user: User): Optional<GoogleToken>
     fun findByUserId(userId: Long): Optional<GoogleToken>
+    fun findByGoogleEmail(googleEmail: String): Optional<GoogleToken>
 }

@@ -81,13 +81,14 @@ class GoogleOAuthService(
     /**
      * Save or update Google tokens for a user
      */
-    fun saveTokens(user: User, accessToken: String, refreshToken: String?, expiresInSeconds: Int?) {
+    fun saveTokens(user: User, accessToken: String, refreshToken: String?, expiresInSeconds: Int?, googleEmail: String) {
         val expiresAt = expiresInSeconds?.let { LocalDateTime.now().plusSeconds(it.toLong()) }
 
         val existingToken = googleTokenRepository.findByUser(user)
         if (existingToken.isPresent) {
             val token = existingToken.get()
             token.accessToken = accessToken
+            token.googleEmail = googleEmail
             if (refreshToken != null) token.refreshToken = refreshToken
             token.expiresAt = expiresAt
             token.updatedAt = LocalDateTime.now()
@@ -95,6 +96,7 @@ class GoogleOAuthService(
         } else {
             googleTokenRepository.save(GoogleToken(
                 user = user,
+                googleEmail = googleEmail,
                 accessToken = accessToken,
                 refreshToken = refreshToken,
                 expiresAt = expiresAt
@@ -156,10 +158,20 @@ class GoogleOAuthService(
         return googleTokenRepository.findByUser(user).isPresent
     }
 
+    fun getGoogleToken(user: User): Optional<GoogleToken> {
+        return googleTokenRepository.findByUser(user)
+    }
+
     fun disconnect(user: User) {
         val tokenOpt = googleTokenRepository.findByUser(user)
         if (tokenOpt.isPresent) {
             googleTokenRepository.delete(tokenOpt.get())
         }
+    }
+
+    fun findUserByGoogleEmail(googleEmail: String): User? {
+        return googleTokenRepository.findByGoogleEmail(googleEmail)
+            .map { it.user }
+            .orElse(null)
     }
 }

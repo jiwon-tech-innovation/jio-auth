@@ -14,6 +14,9 @@ data class GoogleToken(
     @JoinColumn(name = "user_id", unique = true, nullable = false)
     val user: User,
 
+    @Column(name = "google_email", unique = true)
+    var googleEmail: String? = null,
+
     @Column(name = "access_token", nullable = false, length = 2048)
     var accessToken: String,
 
